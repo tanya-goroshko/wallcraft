@@ -26,10 +26,6 @@ class PicSumCubit extends Cubit<PicSumState> {
     });
   }
 
-  void changeLoading() {
-    emit(state.copyWith(isLoading: !state.isLoading));
-  }
-
   void changeFavorites(int index) {
     var newImage = state.images.list[index].copyWith(
         id: state.images.list[index].id,
