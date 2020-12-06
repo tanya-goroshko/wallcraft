@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wallcraft/bloc/picsum_state.dart';
 import 'package:wallcraft/models/images.dart';
+import 'package:wallcraft/repositories/http_exception.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -23,6 +24,12 @@ class PicSumCubit extends Cubit<PicSumState> {
           images: Images(list: [...state.images.list, ...images.list]),
           isLoading: false,
           pageCount: state.pageCount + 1));
+    }).catchError((error) {
+      if(error is HTTPException) {
+        emit(PicSumState(errorCode: error.code));
+      } else {
+        emit(PicSumState(errorCode: 500));
+      }
     });
   }
 
@@ -41,7 +48,7 @@ class PicSumCubit extends Cubit<PicSumState> {
   _scrollListener() {
     if (scrollController.offset >= scrollController.position.maxScrollExtent &&
         !scrollController.position.outOfRange) {
-        getImages();
+      getImages();
     }
   }
 }

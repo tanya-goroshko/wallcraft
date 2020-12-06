@@ -6,7 +6,6 @@ import 'package:wallcraft/bloc/picsum_state.dart';
 import 'package:wallcraft/models/images.dart';
 import 'package:wallcraft/widgets/favorites.dart';
 
-
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -43,56 +42,75 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
                 ],
               ),
-              body: state.isLoading == true
-                  ? Center(child: CircularProgressIndicator())
-                  : GridView.count(
-                      controller: cubit.scrollController,
-                      crossAxisCount: 3,
-                      children:
-                          List.generate(state.images.list.length, (index) {
-                        return Center(
-                            child: Padding(
-                                padding: EdgeInsets.all(20),
-                                child: Column(
-                                  children: [
-                                    Stack(
-                                      children: <Widget>[
-                                        FittedBox(
-                                          child: Image.network(
-                                            state
-                                                .images.list[index].downloadUrl,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.4,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.4,
-                                          ),
-                                          fit: BoxFit.fill,
-                                        ),
-                                        Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: IconButton(
-                                            icon: Icon(state.images.list[index]
-                                                    .isFavorited
-                                                ? Icons.favorite
-                                                : Icons.favorite_border),
-                                            color: state.images.list[index]
-                                                    .isFavorited
-                                                ? Colors.red
-                                                : null,
-                                            onPressed: () =>
-                                                cubit.changeFavorites(index),
-                                          ),
+              body: state.errorCode != null
+                  ? Center(
+                      child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.error_outline,
+                          color: Colors.redAccent,
+                          size: 24,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "There was an error fetching data",
+                          style: TextStyle(color: Colors.redAccent),
+                        )
+                      ],
+                    ))
+                  : state.isLoading == true
+                      ? Center(child: CircularProgressIndicator())
+                      : GridView.count(
+                          controller: cubit.scrollController,
+                          crossAxisCount: 3,
+                          children:
+                              List.generate(state.images.list.length, (index) {
+                            return Center(
+                                child: Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: Column(
+                                      children: [
+                                        Stack(
+                                          children: <Widget>[
+                                            FittedBox(
+                                              child: Image.network(
+                                                state.images.list[index]
+                                                    .downloadUrl,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.4,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.4,
+                                              ),
+                                              fit: BoxFit.fill,
+                                            ),
+                                            Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: IconButton(
+                                                icon: Icon(state.images
+                                                        .list[index].isFavorited
+                                                    ? Icons.favorite
+                                                    : Icons.favorite_border),
+                                                color: state.images.list[index]
+                                                        .isFavorited
+                                                    ? Colors.red
+                                                    : null,
+                                                onPressed: () => cubit
+                                                    .changeFavorites(index),
+                                              ),
+                                            )
+                                          ],
                                         )
                                       ],
-                                    )
-                                  ],
-                                )));
-                      }),
-                    ));
+                                    )));
+                          }),
+                        ));
         });
   }
 

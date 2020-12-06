@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:wallcraft/models/images.dart';
+import 'package:wallcraft/repositories/http_exception.dart';
 import 'package:wallcraft/repositories/picsum_repository_interface.dart';
 
 class PicSumRepository implements IPicSumRepository {
@@ -14,7 +15,7 @@ class PicSumRepository implements IPicSumRepository {
         queryParameters: {'page': page, 'limit': IPicSumRepository.imagesPerPage});
 
     if (response.statusCode != 200) {
-      throw Exception('ooooppppppssss!!!');
+      throw HTTPException(response.statusCode, 'unable to fetch data');
     }
     
     return Images.fromJson(response.data);
